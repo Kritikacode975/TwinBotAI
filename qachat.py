@@ -1,47 +1,42 @@
 from dotenv import load_dotenv
-load_dotenv()  # Load all the environment variables
+load_dotenv() ## loading all the environment variables
 
 import streamlit as st
 import os
 import google.generativeai as genai
 
-# Configure Gemini API
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-# Initialize the Gemini Pro model
-model = genai.GenerativeModel("gemini-pro")
+## function to load Gemini Pro model and get repsonses
+model=genai.GenerativeModel("gemini-pro") 
 chat = model.start_chat(history=[])
-
-# Function to get responses from Gemini
 def get_gemini_response(question):
-    response = chat.send_message(question, stream=True)
+    
+    response=chat.send_message(question,stream=True)
     return response
 
-# Initialize Streamlit app
-st.set_page_config(page_title="Q&A Demo", layout="centered")
+##initialize our streamlit app
 
-st.title("Gemini LLM Chatbot")
+st.set_page_config(page_title="Q&A Demo")
+
+st.header("Gemini LLM Application")
 
 # Initialize session state for chat history if it doesn't exist
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
 
-# Display chat history at the top
-st.subheader("Chat History")
-for role, text in st.session_state['chat_history']:
-    st.markdown(f"**{role}:** {text}")
+input=st.text_input("Input: ",key="input")
+submit=st.button("Ask the question")
 
-# Input section at the bottom
-with st.container():
-    input_text = st.text_input("Your Message:", key="input", placeholder="Type your question here...")
-    if st.button("Submit", key="submit"):
-        if input_text.strip():  # Ensure input is not empty
-            # Add user query to chat history
-            st.session_state['chat_history'].append(("You", input_text))
-            # Get response from Gemini
-            response = get_gemini_response(input_text)
-            # Stream Gemini's response and add to chat history
-            for chunk in response:
-                st.session_state['chat_history'].append(("Bot", chunk.text))
-            # Clear the input field
-            # st.experimental_rerun()
+if submit and input:
+    response=get_gemini_response(input)
+    # Add user query and response to session state chat history
+    st.session_state['chat_history'].append(("You", input))
+    st.subheader("The Response is")
+    for chunk in response:
+        st.write(chunk.text)
+        st.session_state['chat_history'].append(("Bot", chunk.text))
+st.subheader("The Chat History is")
+    
+for role, text in st.session_state['chat_history']:
+    st.write(f"{role}: {text}")
