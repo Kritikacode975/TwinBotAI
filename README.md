@@ -1,6 +1,6 @@
 # Gemini LLM Q&A Application
 
-This repository contains a Streamlit application that interacts with the Gemini Pro Large Language Model (LLM) for a Question & Answer demo. The application uses `google.generativeai` for interacting with the Gemini Pro model and provides real-time responses to user queries.
+This repository contains the Streamlit application that interacts with the Gemini Pro Large Language Model (LLM) for a Question & Answer demo. The application uses `google.generativeai` for interacting with the Gemini Pro model and provides real-time responses to user queries.
 
 ## Features
 
